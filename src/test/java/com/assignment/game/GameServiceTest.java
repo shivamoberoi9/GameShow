@@ -18,6 +18,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
+import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Utils.class})
 public class GameServiceTest {
@@ -31,7 +34,6 @@ public class GameServiceTest {
         System.setOut(new PrintStream(outContent));
     }
 
-
     @InjectMocks
     GameServiceImpl gameService;
 
@@ -40,14 +42,14 @@ public class GameServiceTest {
 
     @Test
     public void won_with_switching() {
-        PowerMockito.mockStatic(Utils.class);
+        mockStatic(Utils.class);
         // Prize box is 2
-        PowerMockito.when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
+        when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
         //User selects box 1
-        Mockito.when(ioUtil.getUserInput()).thenReturn(1);
+        when(ioUtil.getUserInput()).thenReturn(1);
         // get the empty box as 3rd box
         PowerMockito.when(Utils.getDifferentNumber(1, 2, 1, boxes)).thenCallRealMethod();
-        Mockito.when(ioUtil.getUserInputForSwitchingTheOption()).thenReturn(true);
+        when(ioUtil.getUserInputForSwitchingTheOption()).thenReturn(true);
         // After switching
         PowerMockito.when(Utils.getDifferentNumber(1, 3, 1, boxes)).thenCallRealMethod();
         gameService.run(1, boxes);
@@ -57,13 +59,13 @@ public class GameServiceTest {
 
     @Test
     public void won_without_switching() {
-        PowerMockito.mockStatic(Utils.class);
+        mockStatic(Utils.class);
         // Prize box is 2
-        PowerMockito.when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
+        when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
         //User selects box 2
-        Mockito.when(ioUtil.getUserInput()).thenReturn(2);
+        when(ioUtil.getUserInput()).thenReturn(2);
         // get the empty box as 3rd box or 1st
-        PowerMockito.when(Utils.getDifferentNumber(2, 2, 1, boxes)).thenCallRealMethod();
+        when(Utils.getDifferentNumber(2, 2, 1, boxes)).thenCallRealMethod();
         gameService.run(1, boxes);
         Assert.assertTrue(outContent.toString().contains(Result.WON.name()));
 
@@ -71,33 +73,31 @@ public class GameServiceTest {
 
     @Test
     public void lost_with_switching() {
-        PowerMockito.mockStatic(Utils.class);
+        mockStatic(Utils.class);
         // Prize box is 2
-        PowerMockito.when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
+        when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
         //User selects box 2
-        Mockito.when(ioUtil.getUserInput()).thenReturn(2);
+        when(ioUtil.getUserInput()).thenReturn(2);
         // get the empty box as 3rd box or 1st box
-        PowerMockito.when(Utils.getDifferentNumber(2, 2, 1, boxes)).thenCallRealMethod();
-        Mockito.when(ioUtil.getUserInputForSwitchingTheOption()).thenReturn(true);
+        when(Utils.getDifferentNumber(2, 2, 1, boxes)).thenCallRealMethod();
+        when(ioUtil.getUserInputForSwitchingTheOption()).thenReturn(true);
         // After switching
-        PowerMockito.when(Utils.getDifferentNumber(2, 3, 1, boxes)).thenCallRealMethod();
-        PowerMockito.when(Utils.getDifferentNumber(2, 1, 1, boxes)).thenCallRealMethod();
+        when(Utils.getDifferentNumber(2, 3, 1, boxes)).thenCallRealMethod();
+        when(Utils.getDifferentNumber(2, 1, 1, boxes)).thenCallRealMethod();
         gameService.run(1, boxes);
         Assert.assertTrue(outContent.toString().contains(Result.LOST.name()));
     }
 
     @Test
     public void lost_without_switching() {
-        PowerMockito.mockStatic(Utils.class);
+        mockStatic(Utils.class);
         // Prize box is 2
-        PowerMockito.when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
+        when(Utils.getRandomNumber(1, boxes)).thenReturn(2);
         //User selects box 1
-        Mockito.when(ioUtil.getUserInput()).thenReturn(1);
+        when(ioUtil.getUserInput()).thenReturn(1);
         // get the empty box as 3rd box
-        PowerMockito.when(Utils.getDifferentNumber(2, 1, 1, boxes)).thenCallRealMethod();
+        when(Utils.getDifferentNumber(2, 1, 1, boxes)).thenCallRealMethod();
         gameService.run(1, boxes);
         Assert.assertTrue(outContent.toString().contains(Result.LOST.name()));
     }
-
-
 }
